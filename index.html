@@ -114,10 +114,10 @@ function showMessage(id, message) {
   $(id).textContent = message;
 }
 
-function setupRecaptcha() {
+asyne function setupRecaptcha() {
   if (recaptcha) return;
   recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {});
-  recaptcha.render();
+  await recaptcha.render();
 }
 
 $("sendOtp").addEventListener("click", async () => {
@@ -130,7 +130,7 @@ $("sendOtp").addEventListener("click", async () => {
   }
 
   try {
-    setupRecaptcha();
+    await setupRecaptcha();
     confirmationResult = await signInWithPhoneNumber(auth, phone, recaptcha);
     showMessage("loginMessage", "OTP sent! Check your phone.");
   } catch (error) {

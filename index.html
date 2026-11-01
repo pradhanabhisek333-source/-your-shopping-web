@@ -1,0 +1,603 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Shopping | Online Marketplace</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f9;
+  color: #222;
+}
+
+header {
+  background: #2874f0;
+  color: white;
+  padding: 18px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.search {
+  flex: 1;
+  max-width: 450px;
+  display: flex;
+}
+
+.search input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+}
+
+.search button {
+  padding: 12px 18px;
+  border: none;
+  background: #ffca28;
+  cursor: pointer;
+}
+
+.header-buttons button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.hero {
+  background: linear-gradient(120deg,#2874f0,#7b61ff);
+  color: white;
+  text-align: center;
+  padding: 55px 15px;
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  font-size: 17px;
+}
+
+.categories {
+  background: white;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.categories button {
+  border: none;
+  background: #eaf1ff;
+  color: #2874f0;
+  padding: 12px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
+.section {
+  padding: 30px 5%;
+}
+
+.section h2 {
+  margin-bottom: 20px;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(190px,1fr));
+  gap: 20px;
+}
+
+.product {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0001;
+  padding-bottom: 15px;
+}
+
+.product img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  padding: 10px;
+  background: white;
+}
+
+.product h3 {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.product p {
+  padding: 0 10px;
+  margin: 5px 0;
+}
+
+.price {
+  color: #159447;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.product button {
+  margin: 10px;
+  width: calc(100% - 20px);
+  padding: 11px;
+  background: #ff9f00;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.panel {
+  background: white;
+  margin: 25px 5%;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #0001;
+}
+
+.panel input, .panel select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.panel button {
+  padding: 12px 20px;
+  background: #2874f0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 5px;
+}
+
+.hidden {
+  display: none;
+}
+
+#message {
+  padding: 10px;
+  color: #2874f0;
+}
+
+footer {
+  background: #172337;
+  color: white;
+  text-align: center;
+  padding: 25px;
+  margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🛒 Your Shopping</div>
+
+  <div class="search">
+    <input id="searchInput"
+      type="text" placeholder="Search products...">
+    <button onclick="searchProducts()">Search</button>
+  </div>
+
+  <div class="header-buttons">
+    <button onclick="showLogin()">Login</button>
+    <button onclick="showCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Welcome to Your Shopping</h1>
+  <p>Everything you need, all in one place.</p>
+  <p>Shop Smart. Save More!</p>
+</section>
+
+<nav class="categories">
+  <button onclick="filterCategory('All')">All</button>
+  <button onclick="filterCategory('Electronics')">Electronics</button>
+  <button onclick="filterCategory('Fashion')">Fashion</button>
+  <button onclick="filterCategory('Home')">Home</button>
+  <button onclick="filterCategory('Accessories')">Accessories</button>
+</nav>
+
+<section class="section">
+  <h2>🔥 Popular Products</h2>
+  <div class="products" id="productList"></div>
+</section>
+
+<div class="panel hidden" id="loginPanel">
+  <h2>Account Login / Signup</h2>
+  <input type="email" id="email" placeholder="Enter your email">
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="signup()">Create Account</button>
+  <button onclick="login()">Login</button>
+  <button onclick="closePanels()">Close</button>
+</div>
+
+<div class="panel hidden" id="sellerPanel">
+  <h2>Become a Seller</h2>
+  <p>Add your products to Your Shopping.</p>
+
+  <input id="productName" placeholder="Product name">
+  <input id="productPrice" type="number" placeholder="Price in ₹">
+  <select id="productCategory">
+    <option>Electronics</option>
+    <option>Fashion</option>
+    <option>Home</option>
+    <option>Accessories</option>
+  </select>
+  <input id="productImage" placeholder="Product image URL">
+
+  <button onclick="addProduct()">Publish Product</button>
+  <button onclick="closePanels()">Close</button>
+</div>
+
+<div class="panel hidden" id="cartPanel">
+  <h2>🛒 Your Cart</h2>
+  <div id="cartItems"></div>
+  <h3 id="total">Total: ₹0</h3>
+  <button onclick="checkout()">Checkout</button>
+  <button onclick="closePanels()">Continue Shopping</button>
+</div>
+
+<p id="message"></p>
+
+<footer>
+  <h2>Your Shopping</h2>
+  <p>Your favourite online shopping marketplace.</p>
+  <p>© 2026 Your Shopping. All Rights Reserved.</p>
+</footer>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+// FIREBASE CONFIGURATION
+// Use the exact values from your Firebase console.
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDQk5xe28AujBzMXnCu_KbY-TVHRktvsGI",
+  authDomain: "campus-marketplace-fd855.firebaseapp.com",
+  projectId: "campus-marketplace-fd855",
+  storageBucket: "campus-marketplace-fd855.firebasestorage.app",
+  messagingSenderId: "1012988673137",
+  appId: "1:1012988673137:web:b23ab3e91f11c4f9562fd0",
+  measurementId: "G-MDNC04PDH3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let cart = [];
+let products = [];
+
+const demoProducts = [
+  {
+    id: "demo1",
+    name: "Wireless Headphones",
+    price: 799,
+    category: "Electronics",
+    image: "https://placehold.co/400x300?text=Headphones"
+  },
+  {
+    id: "demo2",
+    name: "Smart Watch",
+    price: 1299,
+    category: "Electronics",
+    image: "https://placehold.co/400x300?text=Smart+Watch"
+  },
+  {
+    id: "demo3",
+    name: "Stylish T-Shirt",
+    price: 499,
+    category: "Fashion",
+    image: "https://placehold.co/400x300?text=T-Shirt"
+  },
+  {
+    id: "demo4",
+    name: "Running Shoes",
+    price: 999,
+    category: "Fashion",
+    image: "https://placehold.co/400x300?text=Shoes"
+  },
+  {
+    id: "demo5",
+    name: "Table Lamp",
+    price: 599,
+    category: "Home",
+    image: "https://placehold.co/400x300?text=Lamp"
+  },
+  {
+    id: "demo6",
+    name: "Backpack",
+    price: 699,
+    category: "Accessories",
+    image: "https://placehold.co/400x300?text=Backpack"
+  }
+];
+
+async function loadProducts() {
+  products = [...demoProducts];
+
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+
+    snapshot.forEach((doc) => {
+      products.push({ id: doc.id, ...doc.data() });
+    });
+  } catch (error) {
+    console.log("Products database not ready:", error.message);
+  }
+
+  displayProducts(products);
+}
+
+function displayProducts(items) {
+  const list = document.getElementById("productList");
+  list.innerHTML = "";
+
+  if (items.length === 0) {
+    list.innerHTML = "<p>No products found.</p>";
+    return;
+  }
+
+  items.forEach((product) => {
+    const card = document.createElement("div");
+    card.className = "product";
+
+    const img = document.createElement("img");
+    img.src = product.image || "https://placehold.co/400x300";
+    img.alt = product.name || "Product";
+    img.onerror = () => {
+      img.src = "https://placehold.co/400x300?text=Product";
+    };
+
+    const name = document.createElement("h3");
+    name.textContent = product.name;
+
+    const category = document.createElement("p");
+    category.textContent = product.category || "General";
+
+    const price = document.createElement("p");
+    price.className = "price";
+    price.textContent = "₹" + product.price;
+
+    const button = document.createElement("button");
+    button.textContent = "Add to Cart";
+    button.onclick = () => addToCart(product.id);
+
+    card.append(img, name, category, price, button);
+    list.appendChild(card);
+  });
+}
+
+window.searchProducts = function() {
+  const query = document.getElementById("searchInput")
+    .value.toLowerCase();
+
+  displayProducts(products.filter(p =>
+    p.name.toLowerCase().includes(query)
+  ));
+};
+
+window.filterCategory = function(category) {
+  if (category === "All") {
+    displayProducts(products);
+  } else {
+    displayProducts(products.filter(p =>
+      p.category === category
+    ));
+  }
+};
+
+window.addToCart = function(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  cart.push(product);
+  document.getElementById("cartCount").textContent = cart.length;
+  document.getElementById("message").textContent =
+    product.name + " added to cart!";
+};
+
+window.showCart = function() {
+  closePanels();
+
+  document.getElementById("cartPanel").classList.remove("hidden");
+
+  const items = document.getElementById("cartItems");
+  items.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach((product, index) => {
+    total += Number(product.price);
+
+    const row = document.createElement("p");
+    row.textContent =
+      product.name + " - ₹" + product.price + " ";
+
+    const remove = document.createElement("button");
+    remove.textContent = "Remove";
+    remove.onclick = () => {
+      cart.splice(index, 1);
+      document.getElementById("cartCount").textContent = cart.length;
+      showCart();
+    };
+
+    row.appendChild(remove);
+    items.appendChild(row);
+  });
+
+  document.getElementById("total").textContent =
+    "Total: ₹" + total;
+};
+
+window.checkout = function() {
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
+  if (!currentUser) {
+    alert("Please login before checkout.");
+    showLogin();
+    return;
+  }
+
+  alert("Shopping demo only. Online payment will be added in a later step.");
+};
+
+window.showLogin = function() {
+  closePanels();
+  document.getElementById("loginPanel").classList.remove("hidden");
+};
+
+window.closePanels = function() {
+  ["loginPanel", "sellerPanel", "cartPanel"].forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+};
+
+window.signup = async function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Account created successfully!");
+    closePanels();
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+window.login = async function() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert("Login successful!");
+    closePanels();
+  } catch (error) {
+    alert(error.message);
+  }
+};
+
+window.addProduct = async function() {
+  if (!currentUser) {
+    alert("Please login first.");
+    return;
+  }
+
+  const name = document.getElementById("productName").value.trim();
+  const price = Number(document.getElementById("productPrice").value);
+  const category = document.getElementById("productCategory").value;
+  const image = document.getElementById("productImage").value.trim();
+
+  if (!name || !Number.isFinite(price) || price <= 0 || !image) {
+    alert("Enter a valid name, price and image URL.");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "products"), {
+      name,
+      price,
+      category,
+      image,
+      sellerId: currentUser.uid,
+      createdAt: serverTimestamp()
+    });
+
+    alert("Product published successfully!");
+    closePanels();
+    await loadProducts();
+
+  } catch (error) {
+    alert("Could not publish product: " + error.message);
+  }
+};
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+
+  if (user) {
+    document.querySelector(".header-buttons").innerHTML = `
+      <button onclick="document.getElementById('sellerPanel').classList.remove('hidden')">
+        Become a Seller
+      </button>
+      <button onclick="logout()">Logout</button>
+      <button onclick="showCart()">🛒 Cart (<span id="cartCount">${cart.length}</span>)</button>
+    `;
+  } else {
+    document.querySelector(".header-buttons").innerHTML = `
+      <button onclick="showLogin()">Login</button>
+      <button onclick="showCart()">🛒 Cart (<span id="cartCount">${cart.length}</span>)</button>
+    `;
+  }
+});
+
+window.logout = async function() {
+  await signOut(auth);
+  alert("Logged out successfully.");
+};
+
+loadProducts();
+
+</script>
+</body>
+</html>

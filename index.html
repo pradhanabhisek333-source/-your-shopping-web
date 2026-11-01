@@ -114,7 +114,7 @@ function showMessage(id, message) {
   $(id).textContent = message;
 }
 
-asyne function setupRecaptcha() {
+async function setupRecaptcha() {
   if (recaptcha) return;
   recaptcha = new RecaptchaVerifier(auth, "recaptcha-container", {});
   await recaptcha.render();
